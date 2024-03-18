@@ -5,3 +5,6 @@
 	path = rocksdb
 	url = git@github.com:facebook/rocksdb.git
 	branch = 8.9.fb
+[submodule "kv-bench-rocksdb-example"]
+	path = kv-bench-rocksdb-example
+	url = git@github.com:BU-DiSC/kv-bench-rocksdb-example.git
