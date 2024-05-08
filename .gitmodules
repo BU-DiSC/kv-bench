@@ -1,10 +1,10 @@
 [submodule "K-V-Workload-Generator"]
 	path = K-V-Workload-Generator
-	url = git@github.com:BU-DiSC/K-V-Workload-Generator.git
+	url = https://github.com/BU-DiSC/K-V-Workload-Generator.git
 [submodule "rocksdb"]
 	path = rocksdb
-	url = git@github.com:facebook/rocksdb.git
+	url = https://github.com/facebook/rocksdb.git
 	branch = 8.9.fb
 [submodule "kv-bench-rocksdb-example"]
 	path = kv-bench-rocksdb-example
-	url = git@github.com:BU-DiSC/kv-bench-rocksdb-example.git
+	url = https://github.com/BU-DiSC/kv-bench-rocksdb-example.git
