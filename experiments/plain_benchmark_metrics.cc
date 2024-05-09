@@ -103,6 +103,8 @@ int runExperiments(EmuEnv* _env) {
   WorkloadDescriptor ingestion_wd(_env->ingestion_wpath);
   WorkloadDescriptor query_wd(_env->query_wpath);
 
+  options.compaction_style = rocksdb::kCompactionStyleNone;
+
   //WorkloadDescriptor wd(workloadPath);
   // init RocksDB configurations and experiment settings
   configOptions(_env, &options, &table_options, &write_options, &read_options, &flush_options);
@@ -146,6 +148,10 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
     assert(s.ok());
     s= DB::Open(options, _env->path, &db);
     assert(s.ok());
+
+    std::cout << "sleeping for 1 minute" << std::endl;
+    std::this_thread::sleep_for(std::chrono::minutes(1));
+
 
     if (_env->throughput_collect_interval == 0) {
       runWorkload(db, _env, &options, &table_options, &write_options, &read_options, &flush_options, &env_options, &query_wd, query_track);
