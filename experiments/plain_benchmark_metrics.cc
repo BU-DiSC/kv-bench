@@ -19,6 +19,7 @@
 #include "emu_environment.h"
 #include "workload_stats.h"
 #include "emu_util.h"
+#include "PowerMeter.h"
 
 
 using namespace rocksdb;
@@ -142,8 +143,27 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
     if (!s.ok()) std::cerr << s.ToString() << std::endl;
     assert(s.ok());
 
+    PowerMeter pm_load;
+    if (pm_load.startMeasurement()) {
+        std::cout << "Power measurement started successfully for load." << std::endl;
+    } else {
+        std::cerr << "Failed to start power measurement for load." << std::endl;
+        return 1;
+    }
+
     // Run workload
     runWorkload(db, _env, &options, &table_options, &write_options, &read_options, &flush_options, &env_options, &ingestion_wd, ingestion_query_track);
+
+    if (pm_load.stopMeasurement()) {
+        std::cout << "Power measurement stopped successfully for load." << std::endl;
+    } else {
+        std::cerr << "Failed to stop power measurement for load." << std::endl;
+        return 1;
+    }
+
+    double energyUsedLoad = pm_load.getEnergyUsage();
+    std::cout << "Energy used for load: " << energyUsedLoad << " units." << std::endl;
+
     s = CloseDB(db, flush_options);
     assert(s.ok());
     s= DB::Open(options, _env->path, &db);
@@ -152,6 +172,13 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
     std::cout << "sleeping for 1 minute" << std::endl;
     std::this_thread::sleep_for(std::chrono::minutes(1));
 
+    PowerMeter pm_exec;
+    if (pm_exec.startMeasurement()) {
+        std::cout << "Power Measurement started successfully for exec." << std::endl;
+    } else {
+        std::cerr << "Failed to start power measurement for exec." << std::endl;
+        return 1;
+    }
 
     if (_env->throughput_collect_interval == 0) {
       runWorkload(db, _env, &options, &table_options, &write_options, &read_options, &flush_options, &env_options, &query_wd, query_track);
@@ -160,6 +187,17 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
       runWorkload(db, _env, &options, &table_options, &write_options, &read_options, &flush_options, &env_options, &query_wd, query_track, &temp_collector);
       merge_tput_vectors(&throughput_collector, &temp_collector);
     }
+
+    if (pm_exec.stopMeasurement()) {
+        std::cout << "Power Measurement stopped successfully for exec." << std::endl;
+    } else {
+        std::cerr << "Failed to stop power measurement for exex." << std::endl;
+        return 1;
+    }
+
+
+    double energyUsedExec = pm_exec.getEnergyUsage();
+    std::cout << "Energy used for exec: " << energyUsedExec << " units." << std::endl;
 
     // Collect stats after per run
     populateQueryTracker(query_track, db, table_options, _env);

@@ -18,11 +18,11 @@ endif
 
 all: plain_benchmark_metrics
 
-plain_benchmark_metrics: librocksdb emu_environment.cc workload_stats.cc aux_time.cc emu_util.cc
-	$(CXX) $(CXXFLAGS) $@.cc -o$@ emu_environment.cc emu_util.cc workload_stats.cc aux_time.cc ${rocksdbpath}/librocksdb.a -I${rocksdbpath}/include -I${rocksdbpath} -O2 -std=c++11 $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
+plain_benchmark_metrics: librocksdb emu_environment.cc workload_stats.cc aux_time.cc emu_util.cc PowerMeter.cc
+	$(CXX) $(CXXFLAGS) $@.cc -o$@ emu_environment.cc emu_util.cc workload_stats.cc aux_time.cc PowerMeter.cc ${rocksdbpath}/librocksdb.a -I${rocksdbpath}/include -I${rocksdbpath} -O2 -std=c++11 $(PLATFORM_LDFLAGS) $(PLATFORM_CXXFLAGS) $(EXEC_LDFLAGS)
 
 clean:
-	rm -rf plain_benchmark plain_benchmark_debug
+	rm -rf plain_benchmark_metrics plain_benchmark_debug db_working_home
 
 librocksdb:
 	cd ${rocksdbpath} && $(MAKE) static_lib
