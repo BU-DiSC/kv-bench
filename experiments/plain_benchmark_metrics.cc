@@ -106,6 +106,8 @@ int runExperiments(EmuEnv* _env) {
 
   options.compaction_style = rocksdb::kCompactionStyleNone;
 
+  options.PrepareForBulkLoad();
+
   //WorkloadDescriptor wd(workloadPath);
   // init RocksDB configurations and experiment settings
   configOptions(_env, &options, &table_options, &write_options, &read_options, &flush_options);
