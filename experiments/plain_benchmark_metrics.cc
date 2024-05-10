@@ -163,8 +163,10 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
         return 1;
     }
 
-    double energyUsedLoad = pm_load.getEnergyUsage();
-    std::cout << "Energy used for load: " << energyUsedLoad << " units." << std::endl;
+    EnergyUsage energyUsedLoad = pm_load.getEnergyUsage();
+    std::cout << "Energy used for load (pkg): " << energyUsedLoad.pkg << " Joules" << std::endl;
+    std::cout << "Energy used for load (core): " << energyUsedLoad.core << " Joules" << std::endl;
+    std::cout << "Energy used for load (ram): " << energyUsedLoad.ram << " Joules" << std::endl;
 
     s = CloseDB(db, flush_options);
     assert(s.ok());
@@ -198,8 +200,10 @@ std::cout << "Max Bytes for Level Base: " << options.max_bytes_for_level_base <<
     }
 
 
-    double energyUsedExec = pm_exec.getEnergyUsage();
-    std::cout << "Energy used for exec: " << energyUsedExec << " units." << std::endl;
+    EnergyUsage energyUsedExec = pm_exec.getEnergyUsage();
+    std::cout << "Energy used for exec (pkg): " << energyUsedExec.pkg << " Joules" << std::endl;
+    std::cout << "Energy used for exec (core): " << energyUsedExec.core << " Joules" << std::endl;
+    std::cout << "Energy used for exec (ram): " << energyUsedExec.ram << " Joules" << std::endl;
 
     // Collect stats after per run
     populateQueryTracker(query_track, db, table_options, _env);
