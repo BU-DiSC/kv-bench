@@ -19,39 +19,30 @@ enum QueryType : char {
   RANGE_LOOKUP = 'S',
   NONE = 0x00
 };
+
 // 4 Bytes per point lookup/delete entry
 struct BaseEntry{
-  //uint32_t key;
   std::string key;
-  //BaseEntry() : key(0) {}
   BaseEntry() : key("") {}
   virtual ~BaseEntry() = default;
-  //explicit BaseEntry(uint32_t k) : key(k){}
   explicit BaseEntry(std::string k) : key(k){}
 };
+
 // 4 + value size per insert/update query
 struct Entry : public BaseEntry{
   std::string value;
   Entry() : BaseEntry(), value("") {}
-  //explicit Entry(uint32_t k) : BaseEntry(k), value("") {}
   explicit Entry(std::string k) : BaseEntry(k), value("") {}
-  //explicit Entry(uint32_t k,  std::string v) : BaseEntry(k), value(v) {}
   explicit Entry(std::string k,  std::string v) : BaseEntry(k), value(v) {}
 };
+
 // 8 Bytes per range query;
 struct RangeEntry : public BaseEntry {
-  //uint32_t range;
   std::string end_key;
   RangeEntry() : BaseEntry(), end_key("") {}
-/*
-  explicit RangeEntry(uint32_t start_key, uint32_t diff)
-   : BaseEntry(start_key), range(diff) {
-    assert(range >= 0 && "Key range must >= 0");
-  }
-*/
+
   explicit RangeEntry(std::string start_key, std::string _end_key)
    : BaseEntry(start_key), end_key(_end_key) {
-    //assert(range >= 0 && "Key range must >= 0");
   }
 };
 
@@ -78,7 +69,6 @@ struct WorkloadDescriptor {
   uint64_t rlookup_num = 0;
   uint64_t pdelete_num = 0;
   uint64_t rdelete_num = 0;
-  // double plookup_hit_rate = 0.2;		// percentage of zero result point lookup
   std::vector<QueryDescriptor> queries;
   WorkloadDescriptor() : path_("workload.txt") {}
   explicit WorkloadDescriptor(std::string path) : path_(path) {}
@@ -110,7 +100,9 @@ struct QueryTracker {
 
 // Preload workload into memory,
 // which is stored in a WorkloadDescriptor
-void loadWorkload(WorkloadDescriptor *wd);
+void parseWorkload(WorkloadDescriptor *wd);
+void parseIngestionWorkload(WorkloadDescriptor *wd);
+void parseQueryWorkload(WorkloadDescriptor *wd);
 
 // Dump stats from a single track into a cumulative sample
 // to compute cumulative and average result

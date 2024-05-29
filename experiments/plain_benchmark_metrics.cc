@@ -113,8 +113,8 @@ int runExperiments(EmuEnv* _env) {
   configOptions(_env, &options, &table_options, &write_options, &read_options, &flush_options);
    EnvOptions env_options (options);
   // parsing workload
-  loadWorkload(&ingestion_wd);
-  loadWorkload(&query_wd);
+  parseIngestionWorkload(&ingestion_wd);
+  parseQueryWorkload(&query_wd);
 
 
   std::cout << "Compaction Style: " << CompactionStyleToString(options.compaction_style) << std::endl;

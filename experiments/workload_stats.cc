@@ -1,11 +1,19 @@
 #include "workload_stats.h"
 
-void loadWorkload(WorkloadDescriptor *wd) {
-	std::cout << "Loading workload ..." << std::endl;
+void parseIngestionWorkload(WorkloadDescriptor *wd) {
+  std::cout << "Parsing ingestion workload ..." << std::endl;
+  parseWorkload(wd);
+}
+
+void parseQueryWorkload(WorkloadDescriptor *wd) {
+  std::cout << "Parsing query workload ..." << std::endl;
+  parseWorkload(wd);
+}
+
+void parseWorkload(WorkloadDescriptor *wd) {
   assert(wd != nullptr);
   assert(wd->queries.size() == 0);
 	std::ifstream f;
-	//uint32_t key, start_key, end_key;
 	std::string key, start_key, end_key;
 	std::string value;
 	char mode;
@@ -48,7 +56,6 @@ void loadWorkload(WorkloadDescriptor *wd) {
         break;
       case 'R':
         f >> start_key >> end_key;
-        //tmp = new RangeEntry(start_key, end_key - start_key);
         tmp = new RangeEntry(start_key, end_key);
         qd.seq = wd->queries.size() + 1;
         qd.type = RANGE_DELETE;
@@ -69,7 +76,6 @@ void loadWorkload(WorkloadDescriptor *wd) {
         break;
       case 'S':
         f >> start_key >> end_key;
-        //tmp = new RangeEntry(start_key, end_key - start_key);
         tmp = new RangeEntry(start_key, end_key);
         qd.seq = wd->queries.size() + 1;
         qd.type = RANGE_LOOKUP;
@@ -84,12 +90,10 @@ void loadWorkload(WorkloadDescriptor *wd) {
     }
   }
   // for creating pseudo zeor-result point lookup
-  // wd->actual_insert_num = static_cast<uint64_t> (wd->plookup_num * wd->plookup_hit_rate);
-  // wd->actual_total_num  =  wd->total_num - wd->insert_num + wd->actual_insert_num;
   wd->actual_insert_num = wd->insert_num;   
   wd->actual_total_num = wd->total_num;    
   f.close();
-  std::cout << "Load complete ..." << std::endl;
+  std::cout << "Parsing complete ..." << std::endl;
 }
 
 void dumpStats(QueryTracker *sample, const QueryTracker *single) {
